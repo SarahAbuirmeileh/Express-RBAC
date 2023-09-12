@@ -13,7 +13,7 @@ const dataSource = new DataSource({
   database: "Express-RBAC",
   entities: [User, Role, Permission, Profile],
   synchronize: true,
-  logging: true
+  logging: false
 });
 
 dataSource.initialize().then(() => {

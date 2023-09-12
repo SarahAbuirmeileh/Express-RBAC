@@ -11,12 +11,12 @@ const createUser = async (payload: NSUser.Item) => {
       firstName,
       lastName:lastName.join(" "),
       dateOfBirth : payload.dateOfBirth || '',
-      status: payload.status
+      status: payload?.status
     })
     await transaction.save(profile)
     const newUser = User.create(payload);
     newUser.roles=[];
-    newUser.peofile=profile;
+    newUser.profile=profile;
     await transaction.save(newUser);
   });
 };

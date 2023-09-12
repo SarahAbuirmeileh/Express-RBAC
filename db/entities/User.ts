@@ -23,13 +23,13 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   email: string;
 
-  @ManyToMany(()=>Role, role=>role.users)
+  @ManyToMany(()=>Role, role=>role.users, {cascade:true, onDelete:"CASCADE", onUpdate:"CASCADE"})
   @JoinTable()
   roles:Role[]
 
   @OneToOne(()=>Profile)
   @JoinColumn()
-  peofile:Profile
+  profile:Profile
 
   @CreateDateColumn({
     type: 'timestamp',

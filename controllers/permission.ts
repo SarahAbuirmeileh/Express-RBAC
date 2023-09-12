@@ -1,11 +1,16 @@
-import express from "express"
+import { In } from "typeorm"
 import { Permission } from "../db/entities/Permission.js"
+import { Role } from "../db/entities/Role.js"
 import { NSPermission } from "../types/permission.js"
 
-const creatPermission = (payload: NSPermission.Item) => {
+const creatPermission =async (payload: NSPermission.Item) => {
     const newPermission = Permission.create(payload)
-    newPermission.roles = []
-    return newPermission.save()
+    newPermission.roles = await Role.find({
+        where:{
+            id: In(payload?.rolesIds || [])
+        }
+    })
+    return newPermission.save();
 }
 
 export {creatPermission}

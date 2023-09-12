@@ -13,6 +13,6 @@ export namespace NSUser {
     password: string;
     createdAt?: Date;
     dateOfBirth?: Date;
-    status: Type 
+    status?: Type 
   }
 }

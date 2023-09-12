@@ -9,6 +9,7 @@ export namespace NSRole {
         id?: string,
         name:Type,
         createdAt?:Date,
-        permissionsId:string[]
+        permissionsId:string[],
+        usersId?:string[]
     }
 }

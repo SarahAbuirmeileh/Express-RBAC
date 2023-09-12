@@ -16,7 +16,8 @@ export class Profile extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: ['Pending', 'Accepted', 'Rejected']
+    enum: ['Pending', 'Accepted', 'Rejected'],
+    default:"Pending"
   })
   status: 'Pending' | 'Accepted' | 'Rejected';
 

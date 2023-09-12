@@ -18,7 +18,7 @@ export class Role extends BaseEntity {
         type: 'enum',
         enum: ['admin', 'user', 'editor']
     })
-    name: 'admin' | 'user' | 'editor';    
+    name: 'admin' | 'user' | 'editor';      
 
     @CreateDateColumn({
         type: 'timestamp',

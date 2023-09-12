@@ -6,11 +6,8 @@ export class Permission extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['create_post', 'edit_user', 'delete_comment']
-  })
-  status: 'create_post' | 'edit_user' | 'delete_comment';
+  @Column({unique:true})
+  name: string;
 
   @ManyToMany(()=>Role, role=>role.permissions)
   roles:Role[]
