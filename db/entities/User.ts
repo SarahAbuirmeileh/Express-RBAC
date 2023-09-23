@@ -20,7 +20,7 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   password: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique:true })
   email: string;
 
   @ManyToMany(()=>Role, role=>role.users, {cascade:true, onDelete:"CASCADE", onUpdate:"CASCADE"})

@@ -1,6 +1,6 @@
 import express from 'express';
 import { validateUser } from '../middlewares/validation/user.js';
-import { createUser, editUser, getUser } from '../controllers/user.js';
+import { createUser, editUser, getUser, login } from '../controllers/user.js';
 import { validateEditUser } from '../middlewares/validation/editUser.js';
 
 var router = express.Router();
@@ -35,22 +35,17 @@ router.get("/:id", async (req, res) => {
 
 })
 
-
-// router.get('/', (req, res, next) => {
-//   const payload = {
-//     page: req.query.page?.toString() || '1',
-//     pageSize: req.query.pageSize?.toString() || '10'
-//   };
-
-//   getAllJobs(payload)
-//     .then(data => {
-//       res.send(data);
-//     })
-//     .catch(error => {
-//       console.error(error);
-//       res.status(500).send('Something went wrong')
-//     });
-// });
+router.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  login(email, password)
+    .then(data => {
+      res.status(201).send(data);
+    })
+    .catch(err => {
+      res.status(401).send(err);
+    })
+});
 
 export default router;
 
