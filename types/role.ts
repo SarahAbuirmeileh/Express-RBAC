@@ -2,7 +2,7 @@ export namespace NSRole {
     export enum Type {
         admin = 'admin',
         user = 'user',
-        editor = 'editor'
+        owner = 'owner'
     }
 
     export interface Item{

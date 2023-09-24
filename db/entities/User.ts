@@ -8,8 +8,8 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({length:300, nullable:false})
-  name:string
+  @Column({ length: 300, nullable: false })
+  name: string
 
   @BeforeInsert()
   async hashPassword() {
@@ -20,16 +20,24 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   password: string;
 
-  @Column({ nullable: false, unique:true })
+  @Column({ nullable: false, unique: true })
   email: string;
 
-  @ManyToMany(()=>Role, role=>role.users, {cascade:true, onDelete:"CASCADE", onUpdate:"CASCADE"})
+  @ManyToMany(() => Role, role => role.users, { cascade: true, onDelete: "CASCADE", onUpdate: "CASCADE" })
   @JoinTable()
-  roles:Role[]
+  roles: Role[]
 
-  @OneToOne(()=>Profile)
+  @OneToOne(() => Profile, {cascade: true, onDelete:"CASCADE"})
   @JoinColumn()
-  profile:Profile
+  profile: Profile
+
+  @Column({
+    default: "user",
+    unique: true,
+    type: 'enum',
+    enum: ['admin', 'user', 'owner']
+  })
+  type: "admin" | "user" | "owner"
 
   @CreateDateColumn({
     type: 'timestamp',

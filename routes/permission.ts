@@ -1,6 +1,7 @@
 import express from 'express';
 import { validatePermission } from '../middlewares/validation/permission.js'; 
 import { creatPermission } from '../controllers/permission.js'; 
+import { authorize } from '../middlewares/auth/authorize.js';
 
 var router = express.Router();
 

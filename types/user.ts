@@ -6,6 +6,13 @@ export namespace NSUser {
     Rejected='Rejected'
   }
 
+  export enum TypeUser {
+    admin="admin",
+    user= "user",
+    owner= "owner"
+  }
+  
+
   export interface Item {
     id?: string;
     name: string;
@@ -13,6 +20,7 @@ export namespace NSUser {
     password: string;
     createdAt?: Date;
     dateOfBirth?: Date;
-    status?: Type 
+    status?: Type ,
+    type?:TypeUser
   }
 }
