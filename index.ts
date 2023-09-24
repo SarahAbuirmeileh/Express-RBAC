@@ -15,8 +15,8 @@ app.get('/', (req, res) => {
     res.send('Server UP!');
 });
 
-app.use('/user', userRouter);
-app.use('/permission', permissionRouter);
+app.use('/user',authenticate, userRouter);
+app.use('/permission',authenticate, permissionRouter);
 app.use('/role', authenticate,roleRouter);
 
 
