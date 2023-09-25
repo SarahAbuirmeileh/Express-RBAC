@@ -13,7 +13,7 @@ const authenticate = (
   } catch (error) { }
 
   if (tokenIsValid) {
-    const decoded = jwt.decode(token);
+    const decoded = jwt.decode(token);``
     res.locals.user = decoded;
     next();
   } else {

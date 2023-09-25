@@ -33,7 +33,6 @@ export class User extends BaseEntity {
 
   @Column({
     default: "user",
-    unique: true,
     type: 'enum',
     enum: ['admin', 'user', 'owner']
   })

@@ -4,6 +4,7 @@ import { createUser, editUser, getUser, login,getUsers, deleteUser } from '../co
 import { validateEditUser } from '../middlewares/validation/editUser.js';
 import { authorize } from '../middlewares/auth/authorize.js';
 import { authenticate } from '../middlewares/auth/authenticate.js';
+import { User } from '../db/entities/User.js';
 
 var router = express.Router();
 
@@ -16,8 +17,10 @@ router.post('/', validateUser, (req, res, next) => {
   });
 });
 
-router.put("/",authenticate, authorize("EDIT-user"),validateEditUser, (req, res, next) => {
-  editUser(req.body,res.locals.user).then(() => {
+router.put("/",authenticate, authorize("EDIT_user"),validateEditUser, async (req, res, next) => {
+  const currentUser = await User.findOne({where:{name:res.locals.user.name, email:res.locals?.user.email},relations:["roles","roles.permissions"]}) || new User()
+
+  editUser(req.body,currentUser).then(() => {
     res.status(201).send("User edited successfully!!")
   }).catch(err => {
     console.error(err);
@@ -29,6 +32,8 @@ router.get("/:id", authenticate,authorize("GET_user"),async (req, res) => {
     const id = req.params.id
 
     getUser({id}).then((data) => {
+      console.log(data);
+      
       res.status(201).send(data)
     }).catch(err => {
       console.error(err);
@@ -36,14 +41,13 @@ router.get("/:id", authenticate,authorize("GET_user"),async (req, res) => {
     });
 })
 
-router.get('/', authenticate, authorize('GET_users'), (req, res, next) => {
+router.get('/', authenticate, authorize('READ_users'), async (req, res, next) => {
   const payload = {
     page: req.query.page?.toString() || '1',
     pageSize: req.query.pageSize?.toString() || '10'
   };
 
-  const currentUser = res.locals?.user; 
-
+  const currentUser = await User.findOne({where:{name:res.locals.user.name, email:res.locals?.user.email},relations:["roles","roles.permissions"]}) || new User()
   getUsers(payload, currentUser)
     .then(data => {
       res.send(data);
@@ -67,10 +71,12 @@ router.post('/login', (req, res) => {
     })
 });
 
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',authenticate,authorize("DELETE_user"),async (req,res)=>{
 
   const id = req.params.id?.toString() || "";
-  deleteUser(id)
+  const currentUser = await User.findOne({where:{name:res.locals.user.name, email:res.locals?.user.email},relations:["roles","roles.permissions"]}) || new User()
+
+  deleteUser(id,currentUser)
   .then(data => {
     res.send(data);
   })

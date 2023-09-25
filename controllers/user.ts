@@ -45,21 +45,22 @@ const createUser = async (payload: NSUser.Item) => {
     })
     await transaction.save(profile)
     const newUser = User.create(payload);
-    newUser.roles = [];
+    const roles = await Role.find({ where: { name: newUser?.type || 'user' } })
+    newUser.roles = roles;
     newUser.profile = profile;
     await transaction.save(newUser);
   });
 };
 
 
-const getUser = async (payload: { id: string }) => {
-  return await User.findOne({ where: { id: payload.id }, relations: ["roles", "roles.permissions"] })
+const getUser = (payload: { id: string }) => {
+  return User.findOne({ where: { id: payload.id }, relations: ["roles", "roles.permissions"] })
 }
 
 const getUsers = async (payload: {
   page: string,
   pageSize: string
-}, user: User) => {
+}, user: User) => {  
 
   const page = parseInt(payload.page);
   const pageSize = parseInt(payload.pageSize);
@@ -67,15 +68,15 @@ const getUsers = async (payload: {
   const permissions: string[] = [];
 
   const hasAdminPermission = roles.some(role =>
-    role.permissions.some(permission => permission.name === 'READ-admin')
+    role.permissions.some(permission => permission.name === 'READ_admins')
   );
 
   const hasUserPermission = roles.some(role =>
-    role.permissions.some(permission => permission.name === 'READ-user')
+    role.permissions.some(permission => permission.name === 'READ_users')
   );
 
   const hasOwnerPermission = roles.some(role =>
-    role.permissions.some(permission => permission.name === 'READ-owner')
+    role.permissions.some(permission => permission.name === 'READ_owners')
   );
 
   if (hasAdminPermission) {
@@ -87,6 +88,9 @@ const getUsers = async (payload: {
   if (hasOwnerPermission) {
     permissions.push("owner")
   }
+
+  console.log(permissions);
+  
 
   const [users, total] = await User.findAndCount({
     skip: pageSize * (page - 1),
@@ -109,9 +113,9 @@ const editUser = async (payload: { roleId: string, userId: string }, currentUser
   const user = await User.findOne({ where: { id: payload.userId }, relations: ["roles"] });
   const role = await Role.findOne({ where: { id: payload.roleId } });
   const roles = currentUser.roles;
-
+  
   const hasEditPermission = roles.some(role =>
-    role.permissions.some(permission => permission.name === `READ-${user?.type}`)
+    role.permissions.some(permission => permission.name === `EDIT_${user?.type}`)
   );
 
   if (!hasEditPermission) {
@@ -136,7 +140,18 @@ const editUser = async (payload: { roleId: string, userId: string }, currentUser
   }
 }
 
-const deleteUser = async(userId:string)=>{
+const deleteUser = async (userId: string,currentUser:User) => {
+  const user = await User.findOne({ where: { id: userId }, relations: ["roles","roles.permissions"] });
+  const roles = currentUser?.roles;
+
+  const hasDeletePermission = roles?.some(role =>
+    role.permissions.some(permission => permission.name === `DELETE_${user?.type}`)
+  );
+
+  if (!hasDeletePermission) {
+    return `You don't have a permission to delete ${user?.type}`
+  }
+
   return User.delete(userId)
 }
 

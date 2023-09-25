@@ -1,5 +1,4 @@
 import express from 'express';
-import * as EmailValidator from 'email-validator';
 
 const validatePermission = (req: express.Request,
   res: express.Response,
